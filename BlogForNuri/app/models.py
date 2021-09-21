@@ -10,12 +10,23 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     """Модель пользователя. У меня был план, но я его забыл."""
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+class Category(models.Model):
+    """Модель категорий постов"""
+    name = models.CharField(max_length=80, help_text='Выберите категорию')
+
+    def __str__(self):
+        return self.name
+
+    class Meta: 
+        ordering = ('name',)
+
 
 class Post(models.Model):
     """"Модель постов"""
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_lenght=200)
+    title = models.CharField(max_length=200)
     content = models.TextField()
     published = models.DateTimeField(auto_now_add=True)
     last_edited = models.DateTimeField(auto_now=True)
@@ -28,16 +39,6 @@ class Post(models.Model):
     def __str__(self):
         """Возвращаем название поста и автора"""
         return '{} by @{}'.format(self.title, self.author.username)
-
-class Category(models.Model):
-    """Модель категорий постов"""
-    name = models.CharField(max_lenght=80, help_text='Выберите категорию')
-
-    def __str__(self):
-        return self.name
-
-    class Meta: 
-        ordering = ('name',)
 
 class Like(models.Model):
     """Модель лайка"""
