@@ -11,7 +11,7 @@ from .models import Post
 def home(request):
     """Renders the home page."""
     assert isinstance(request, HttpRequest)
-    most_liked_posts = Post.objects.order_by('likes')[:3]
+    most_liked_posts = Post.objects.order_by('-likes')[:3]
     return render(
         request,
         'app/index.html',
@@ -45,5 +45,16 @@ def about(request):
             'title':'About',
             'message':'Your application description page.',
             'year':datetime.now().year,
+        }
+    )
+
+def post(request, post_id):
+    """Renders the post page."""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/post.html',
+        {
+            'post':Post.objects.get(id=post_id),
         }
     )
