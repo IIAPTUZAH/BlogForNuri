@@ -5,16 +5,20 @@ Definition of views.
 from datetime import datetime
 from django.shortcuts import render
 from django.http import HttpRequest
+from .models import Post
+
 
 def home(request):
     """Renders the home page."""
     assert isinstance(request, HttpRequest)
+    most_liked_posts = Post.objects.order_by('likes')[:3]
     return render(
         request,
         'app/index.html',
         {
             'title':'Home Page',
             'year':datetime.now().year,
+            'posts':most_liked_posts,
         }
     )
 
