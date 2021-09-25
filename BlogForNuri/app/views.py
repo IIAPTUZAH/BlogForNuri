@@ -61,8 +61,8 @@ def post(request, post_id):
         }
     )
 
-def singup(request):
-    """Renders the sing up page."""
+def signup(request):
+    """Renders the sign up page."""
     assert isinstance(request, HttpRequest)
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -75,4 +75,10 @@ def singup(request):
             return redirect('home')
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(
+        request,
+       'app/signup.html', 
+       {
+           'form': form,
+       }
+    )

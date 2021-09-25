@@ -26,7 +26,7 @@ urlpatterns = [
          ),
          name='login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('singup', views.singup, name='singup'),
+    path('signup/', views.signup, name='signup'),
     path('admin/', admin.site.urls),
     #path('blogger/<author-id>'),
     path('post/<int:post_id>/', views.post, name='post'),
