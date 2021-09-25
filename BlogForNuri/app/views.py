@@ -3,10 +3,12 @@ Definition of views.
 """
 
 from datetime import datetime
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpRequest
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
 from .models import Post
-
+from .forms import SignUpForm
 
 def home(request):
     """Renders the home page."""
@@ -58,3 +60,19 @@ def post(request, post_id):
             'post':Post.objects.get(id=post_id),
         }
     )
+
+def singup(request):
+    """Renders the sing up page."""
+    assert isinstance(request, HttpRequest)
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form': form})
