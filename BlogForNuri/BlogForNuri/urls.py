@@ -31,5 +31,5 @@ urlpatterns = [
     path('blogger/<int:author_id>/', views.blogger, name='blogger'),
     #path('<int:blogger_id>/posts', views.posts, name='posts'),
     path('post/<int:post_id>/', views.post, name='post'),
-    #path('bloggers/'),
+    path('bloggers/', views.bloggers, name='bloggers'),
 ]

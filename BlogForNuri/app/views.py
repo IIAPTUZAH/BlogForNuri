@@ -94,3 +94,14 @@ def blogger(request, author_id):
             'blog':Post.objects.filter(author=author_id),
         }
     )
+
+def bloggers(request):
+    """Renders list of all bloggers"""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/bloggers.html',
+        {
+            'bloggers':User.objects.all(),
+        }
+    )
