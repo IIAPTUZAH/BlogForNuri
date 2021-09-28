@@ -1,0 +1,30 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div>
+    <h1>{{ user.username }}</h1>
+    <h4>{{ user.first_name }}</h4>
+    <h4>{{ user.last_name }}</h4>
+    <div class="row g-5">
+        <div class="col-md-8">
+            {% for post in blog %}
+            <article class="blog-post">
+                <div>
+                    <h3 class="blog-post-title">{{ post.title }}</h3>
+                    <div class="meta-wrap">
+                        <p class="blog-post-meta">
+                            <span>{{ post.published }}</span>
+                            <span>{{ category }}</span>
+                            <span>Отметок мне нравится {{ post.likes }}</span>
+                        </p>
+
+                    </div>
+                    
+                    <p class="blog-post-content">{{ post.content }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
