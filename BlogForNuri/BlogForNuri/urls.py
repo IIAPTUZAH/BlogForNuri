@@ -29,7 +29,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('admin/', admin.site.urls),
     path('blogger/<int:author_id>/', views.blogger, name='blogger'),
-    #path('<int:blogger_id>/posts', views.posts, name='posts'),
+    path('<int:blogger_id>/posts', views.posts, name='posts'),
     path('post/<int:post_id>/', views.post, name='post'),
     path('bloggers/', views.bloggers, name='bloggers'),
 ]

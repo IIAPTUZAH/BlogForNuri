@@ -61,6 +61,17 @@ def post(request, post_id):
         }
     )
 
+def posts(request, blogger_id):
+    """List of all posts in author blog"""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/blog.html',
+        {
+            'posts':'test'
+        }
+    )
+
 def signup(request):
     """Renders the sign up page."""
     assert isinstance(request, HttpRequest)
