@@ -92,6 +92,5 @@ def blogger(request, author_id):
         {
             'user':User.objects.get(id=author_id),
             'blog':Post.objects.filter(author=author_id),
-            'category':Category.objects.all()
         }
     )

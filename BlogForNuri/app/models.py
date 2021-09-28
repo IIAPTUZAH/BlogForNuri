@@ -33,12 +33,17 @@ class Post(models.Model):
     likes = models.PositiveIntegerField(default=0)
     categories = models.ManyToManyField(Category)
 
+    def display_categories(self):
+        """Отображаем категорию поста"""
+        return ', '.join([ categories.name for categories in self.categories.all() ])
+    display_categories.short_description = 'Categories'
+
     class Meta:
         ordering = ('title',)
 
     def __str__(self):
         """Возвращаем название поста и автора"""
-        return '{} by @{}'.format(self.title, self.author.username)
+        return '{} автор @{}'.format(self.title, self.author.username)
 
 class Like(models.Model):
     """Модель лайка"""
