@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 BlogForNuri/env/pyvenv.cfg
 BlogForNuri/env/Scripts/activate.bat
+BlogForNuri/env/Scripts/Activate.ps1
