@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+BlogForNuri/env/pyvenv.cfg
+BlogForNuri/env/Scripts/activate.bat

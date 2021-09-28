@@ -28,7 +28,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('signup/', views.signup, name='signup'),
     path('admin/', admin.site.urls),
-    #path('blogger/<author-id>'),
+    path('blogger/<int:author_id>/', views.blogger, name='blogger'),
+    #path('<int:blogger_id>/posts', views.posts, name='posts'),
     path('post/<int:post_id>/', views.post, name='post'),
     #path('bloggers/'),
 ]

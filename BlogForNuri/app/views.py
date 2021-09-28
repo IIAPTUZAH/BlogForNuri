@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from .models import Post
+from .models import Post, User, Category
 from .forms import SignUpForm
 
 def home(request):
@@ -81,4 +81,17 @@ def signup(request):
        {
            'form': form,
        }
+    )
+
+def blogger(request, author_id):
+    """Renders page about blogger"""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/blogger.html',
+        {
+            'user':User.objects.get(id=author_id),
+            'blog':Post.objects.filter(author=author_id),
+            'category':Category.objects.all()
+        }
     )

@@ -22,7 +22,7 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 {{ post.content }}
                 <div class="meta">Автор текста
-                    <a href="#">{{ post.author }}</a>
+                    <a href="/blogger/{{ post.author.id }}/">{{ post.author }}</a>
                     <p>Мне нравится {{post.likes}}</p>
                 </div>
             </div>
