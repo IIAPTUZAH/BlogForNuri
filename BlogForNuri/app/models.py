@@ -6,11 +6,11 @@ from django.db import models
 from django.utils import timezone 
 from django.contrib.auth.models import User 
 
-# Create your models here.
 
 class Profile(models.Model):
     """Модель пользователя. У меня был план, но я его забыл."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
 
 class Category(models.Model):
     """Модель категорий постов"""
@@ -44,6 +44,7 @@ class Post(models.Model):
     def __str__(self):
         """Возвращаем название поста и автора"""
         return '{} автор @{}'.format(self.title, self.author.username)
+
 
 class Like(models.Model):
     """Модель лайка"""

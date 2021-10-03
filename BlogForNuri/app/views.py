@@ -1,14 +1,11 @@
-"""
-Definition of views.
-"""
-
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
-from .models import Post, User, Category
+
+from .models import Post, User
 from .forms import SignUpForm
+
 
 def home(request):
     """Renders the home page."""
@@ -18,11 +15,12 @@ def home(request):
         request,
         'app/index.html',
         {
-            'title':'Home Page',
-            'year':datetime.now().year,
-            'posts':most_liked_posts,
+            'title': 'Home Page',
+            'year': datetime.now().year,
+            'posts': most_liked_posts,
         }
     )
+
 
 def contact(request):
     """Renders the contact page."""
@@ -31,11 +29,12 @@ def contact(request):
         request,
         'app/contact.html',
         {
-            'title':'Contact',
-            'message':'Your contact page.',
-            'year':datetime.now().year,
+            'title': 'Contact',
+            'message': 'Your contact page.',
+            'year': datetime.now().year,
         }
     )
+
 
 def about(request):
     """Renders the about page."""
@@ -44,11 +43,12 @@ def about(request):
         request,
         'app/about.html',
         {
-            'title':'About',
-            'message':'Your application description page.',
-            'year':datetime.now().year,
+            'title': 'About',
+            'message': 'Your application description page.',
+            'year': datetime.now().year,
         }
     )
+
 
 def post(request, post_id):
     """Renders the post page."""
@@ -57,9 +57,10 @@ def post(request, post_id):
         request,
         'app/post.html',
         {
-            'post':Post.objects.get(id=post_id),
+            'post': Post.objects.get(id=post_id),
         }
     )
+
 
 def posts(request, blogger_id):
     """List of all posts in author blog"""
@@ -68,9 +69,10 @@ def posts(request, blogger_id):
         request,
         'app/blog.html',
         {
-            'posts':'test'
+            'posts': 'test'
         }
     )
+
 
 def signup(request):
     """Renders the sign up page."""
@@ -88,11 +90,12 @@ def signup(request):
         form = SignUpForm()
     return render(
         request,
-       'app/signup.html', 
-       {
-           'form': form,
-       }
+        'app/signup.html',
+        {
+            'form': form,
+        }
     )
+
 
 def blogger(request, author_id):
     """Renders page about blogger"""
@@ -101,10 +104,11 @@ def blogger(request, author_id):
         request,
         'app/blogger.html',
         {
-            'user':User.objects.get(id=author_id),
-            'blog':Post.objects.filter(author=author_id),
+            'user': User.objects.get(id=author_id),
+            'blog': Post.objects.filter(author=author_id),
         }
     )
+
 
 def bloggers(request):
     """Renders list of all bloggers"""
@@ -113,6 +117,6 @@ def bloggers(request):
         request,
         'app/bloggers.html',
         {
-            'bloggers':User.objects.all(),
+            'bloggers': User.objects.all(),
         }
     )
