@@ -10,34 +10,40 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     """Модель пользователя. У меня был план, но я его забыл."""
-    user = models.OneToOneField(User)
-
-class Post(models.Model):
-    """"Модель постов"""
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_lenght=200)
-    content = models.TextField()
-    published = models.DateTimeField(auto_now_add=True)
-    last_edited = models.DateTimeField(auto_now=True)
-    likes = models.PositiveIntegerField(default=0)
-    categories = models.ManyToManyField(Category)
-
-    class Meta:
-        ordering = ('title',)
-
-    def __str__(self):
-        """Возвращаем название поста и автора"""
-        return '{} by @{}'.format(self.title, self.author.username)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 class Category(models.Model):
     """Модель категорий постов"""
-    name = models.CharField(max_lenght=80, help_text='Выберите категорию')
+    name = models.CharField(max_length=80, help_text='Выберите категорию')
 
     def __str__(self):
         return self.name
 
     class Meta: 
         ordering = ('name',)
+
+
+class Post(models.Model):
+    """Модель постов"""
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    published = models.DateTimeField(auto_now_add=True)
+    last_edited = models.DateTimeField(auto_now=True)
+    likes = models.PositiveIntegerField(default=0)
+    categories = models.ManyToManyField(Category)
+
+    def display_categories(self):
+        """Отображаем категорию поста"""
+        return ', '.join([ categories.name for categories in self.categories.all() ])
+    display_categories.short_description = 'Categories'
+
+    class Meta:
+        ordering = ('title',)
+
+    def __str__(self):
+        """Возвращаем название поста и автора"""
+        return '{} автор @{}'.format(self.title, self.author.username)
 
 class Like(models.Model):
     """Модель лайка"""

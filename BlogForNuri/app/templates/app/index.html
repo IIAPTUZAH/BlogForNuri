@@ -3,31 +3,33 @@
 {% block content %}
 
 <div class="jumbotron">
-    <h1>Django</h1>
-    <p class="lead">Django is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://www.djangoproject.com/" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+  <h1 class="display-4">Приветствую в моем блоге!</h1>
+  <p class="lead">Тут могла бы быть лучшая статья недели, либо ваша реклама.</p>
+  <hr class="my-4">
+  <p>А ниже вы видите кнопку которая ничего не делает - очень похоже на меня.</p>
+  <p class="lead">
+    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+  </p>
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            Django gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://djangobook.com/django-tutorials/">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>The Python Package Index is a repository of software for the Python programming language.</p>
-        <p><a class="btn btn-default" href="https://pypi.org/">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Microsoft Azure</h2>
-        <p>You can easily publish to Microsoft Azure using Visual Studio. Find out how you can host your application using a free trial today.</p>
-        <p><a class="btn btn-default" href="http://azure.microsoft.com">Learn more &raquo;</a></p>
-    </div>
+    {% for post in posts %}
+    <article class="post-preview">
+        <div class="col-md-4">
+            <div class="card-body">
+                <a href="post/{{ post.id }}/">
+                    <h2 class="card-title">{{ post.title }}</h2></a>
+                        <p class="card-text">{{ post.content }}</p>
+            <div class="card-footer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                </svg> {{post.likes}}
+                <a href="blogger/{{ post.author.id }}/">{{ post.author.username }}</a>
+              </div>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
 </div>
 
 {% endblock %}

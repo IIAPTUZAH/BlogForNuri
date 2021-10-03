@@ -1,0 +1,34 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>{{ post.title }}</title>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <h1>{{ post.title }}</h1>
+            </div>
+        </div>
+    </div>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                {{ post.content }}
+                <div class="meta">Автор текста
+                    <a href="/blogger/{{ post.author.id }}/">{{ post.author }}</a>
+                    <p>Мне нравится {{post.likes}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock %}
