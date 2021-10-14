@@ -18,15 +18,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
                 </button>
                 <a href="/" class="navbar-brand">Блог</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}">Домашняя страница</a></li>
-                    <li><a href="{% url 'about' %}">О блоге</a></li>
-                    <li><a href="{% url 'contact' %}">Контакты</a></li>
+                    <li><a href="{% url 'posts' %}">Все записи</a></li>
                     <li><a href="{% url 'admin:index' %}">Админка</a></li>
                 </ul>
                 {% include 'app/loginpartial.html' %}

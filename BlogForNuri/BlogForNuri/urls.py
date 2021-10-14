@@ -11,8 +11,6 @@ from app import forms, views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('contact/', views.contact, name='contact'),
-    path('about/', views.about, name='about'),
     path('login/',
          LoginView.as_view
          (
@@ -28,8 +26,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('signup/', views.signup, name='signup'),
     path('admin/', admin.site.urls),
+    path('posts/', views.posts, name='posts'),
     path('blogger/<int:author_id>/', views.blogger, name='blogger'),
-    path('<int:blogger_id>/posts', views.posts, name='posts'),
+    path('<int:blogger_id>/posts', views.posts, name='posts'),  # В процессе, нет шаблона блога
     path('post/<int:post_id>/', views.post, name='post'),
     path('bloggers/', views.bloggers, name='bloggers'),
 ]
