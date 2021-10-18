@@ -1,34 +1,63 @@
 """
-Definition of urls for BlogForNuri.
+Definition of forms.
 """
 
-from datetime import datetime
-from django.urls import path
-from django.contrib import admin
-from django.contrib.auth.views import LoginView, LogoutView
-from app import forms, views
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
+
+from .models import Post, Category
+
+class BootstrapAuthenticationForm(AuthenticationForm):
+    """Authentication form which uses boostrap CSS."""
+    username = forms.CharField(max_length=254,
+                               widget=forms.TextInput({
+                                   'class': 'form-control',
+                                   'placeholder': 'User name'}))
+    password = forms.CharField(label=_("Password"),
+                               widget=forms.PasswordInput({
+                                   'class': 'form-control',
+                                   'placeholder':'Password'}))
+
+class SignUpForm(UserCreationForm):
+    """Форма регистрации"""
+    first_name = forms.CharField(max_length=30,
+                                 required=False, 
+                                 label='Имя',
+                                 help_text='Необязательное поле.')
+    last_name = forms.CharField(max_length=30,
+                                required=False,
+                                label='Фамилия',
+                                help_text='Необязательно поле.')
+    email = forms.EmailField(max_length=254,
+                             help_text='Обязательное поле. Введите действующий email адрес.')
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
 
 
-urlpatterns = [
-    path('', views.home, name='home'),
-    path('login/',
-         LoginView.as_view
-         (
-             template_name='app/login.html',
-             authentication_form=forms.BootstrapAuthenticationForm,
-             extra_context=
-             {
-                 'title': 'Log in',
-                 'year' : datetime.now().year,
-             }
-         ),
-         name='login'),
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('signup/', views.signup, name='signup'),
-    path('admin/', admin.site.urls),
-    path('posts/', views.posts, name='posts'),
-    path('blogger/<int:author_id>/', views.blogger, name='blogger'),
-    path('<int:blogger_id>/posts', views.posts, name='posts'),  # В процессе, нет шаблона блога
-    path('post/<int:post_id>/', views.post, name='post'),
-    path('bloggers/', views.bloggers, name='bloggers'),
-]
+class BootstrapPostForm(forms.ModelForm):
+    """Форма создания и редактирования поста"""
+    title = forms.CharField(max_length=200,
+                            widget=forms.TextInput({
+                                            'class': 'form-control',
+                                            'placeholder':'Введите название поста'}),
+                            required=True,
+                            label='Заголовок')
+    content = forms.CharField(widget=forms.Textarea({
+                                            'class': 'form-control',
+                                            'placeholder':'Напишите свой пост'}),
+                              label='Текст')
+    categories = forms.ModelChoiceField(queryset=Category.objects.all(),
+                                        widget=forms.SelectMultiple({
+                                            'multiple class': 'form-control',
+                                            'style': 'width: auto;',}),
+                                        required=True,
+                                        label='Категория',
+                                        help_text='Выберите одну или несколько категорий')
+
+    class Meta:
+        model = Post
+        fields = ('title', 'content', 'categories',)
