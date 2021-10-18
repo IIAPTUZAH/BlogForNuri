@@ -2,9 +2,10 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 
 from .models import Post, User
-from .forms import SignUpForm
+from .forms import SignUpForm, BootstrapPostForm
 
 
 def home(request):
@@ -95,5 +96,30 @@ def bloggers(request):
         {
             'title': 'Список всех блоггеров',
             'bloggers': User.objects.all(),
+        }
+    )
+
+
+@login_required(login_url='/login/')
+def post_create(request):
+    """Create new post if user is authenticated"""
+    assert isinstance(request, HttpRequest)
+    if request.method == 'POST':
+        form = BootstrapPostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.published = datetime.now().strftime("%d/%m/%Y")
+            post.save()
+            post_id=post.id
+            return redirect('/post/' + str(post_id))
+    else:
+        form = BootstrapPostForm()
+    return render(
+        request,
+        'app/post_edit.html',
+        {
+            'title': 'Создание поста',
+            'form': form,
         }
     )
