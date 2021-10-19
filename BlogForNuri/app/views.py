@@ -44,7 +44,21 @@ def posts(request):
         'app/blog.html',
         {
             'title': 'Все записи',
-            'posts': Post.objects.order_by('-likes'),
+            'posts': Post.objects.get('-likes'),
+        }
+    )
+
+
+def my_post(request):
+    """List of all user posts"""
+    assert isinstance(request, HttpRequest)
+    author = request.user
+    return render(
+        request,
+        'app/blog.html',
+        {
+            'title': 'Все записи',
+            'posts': Post.objects.filter(author=author),
         }
     )
 
