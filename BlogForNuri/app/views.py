@@ -44,21 +44,21 @@ def posts(request):
         'app/blog.html',
         {
             'title': 'Все записи',
-            'posts': Post.objects.get('-likes'),
+            'posts': Post.objects.order_by('-likes'),
         }
     )
 
 
-def my_post(request):
+def my_blog(request):
     """List of all user posts"""
     assert isinstance(request, HttpRequest)
-    author = request.user
+    user = request.user
     return render(
         request,
         'app/blog.html',
         {
-            'title': 'Все записи',
-            'posts': Post.objects.filter(author=author),
+            'title': 'Мои записи',
+            'posts': Post.objects.filter(author=user),
         }
     )
 

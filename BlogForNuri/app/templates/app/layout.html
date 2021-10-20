@@ -19,6 +19,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 <a href="/" class="navbar-brand">Блог</a>
             </div>
@@ -26,8 +27,12 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}">Домашняя страница</a></li>
                     <li><a href="{% url 'posts' %}">Все записи</a></li>
+                    {% if user.is_authenticated %}
                     <li><a href="{% url 'admin:index' %}">Админка</a></li>
+                    <li><a href="{% url 'my_blog' %}">Мои записи</a></li>
+                    {% endif %}
                     <li><a href="{% url 'post_create' %}">Создать пост</a></li>
+
                 </ul>
                 {% include 'app/loginpartial.html' %}
             </div>
