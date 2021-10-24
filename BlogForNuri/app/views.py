@@ -80,7 +80,7 @@ def blogger(request, author_id):
         'app/blogger.html',
         {
             'title': User.objects.get(id=author_id).username,
-            'user': User.objects.get(id=author_id),
+            'blogger': User.objects.get(id=author_id),
             'blog': Post.objects.filter(author=author_id),
         }
     )
