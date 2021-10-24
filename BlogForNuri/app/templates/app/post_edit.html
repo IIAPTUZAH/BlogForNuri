@@ -1,10 +1,12 @@
 {% extends "app/layout.html" %}
 
+{% block title %}{% if not post %} Создание поста {% else %} Редактировать запись {% endif %}{% endblock %}
+
 {% block content %}
 
 <!DOCTYPE html>
 
-    <h1>Новый пост</h1>
+    <h1>{% if not post %} Новый пост {% else %} Редактировать запись {% endif %}</h1>
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-default">Сохранить</button>

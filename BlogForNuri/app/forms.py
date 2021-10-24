@@ -50,7 +50,7 @@ class BootstrapPostForm(forms.ModelForm):
                                             'class': 'form-control',
                                             'placeholder':'Напишите свой пост'}),
                               label='Текст')
-    categories = forms.ModelChoiceField(queryset=Category.objects.all(),
+    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(),
                                         widget=forms.SelectMultiple({
                                             'multiple class': 'form-control',
                                             'style': 'width: auto;',}),

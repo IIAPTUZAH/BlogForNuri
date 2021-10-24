@@ -8,6 +8,8 @@
 <head>
     <meta charset="utf-8" />
     <title>{{ post.title }}</title>
+</head>
+<body>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
@@ -15,8 +17,6 @@
             </div>
         </div>
     </div>
-</head>
-<body>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
@@ -24,6 +24,12 @@
                 <div class="meta">Автор текста
                     <a href="/blogger/{{ post.author.id }}/">{{ post.author }}</a>
                     <p>Мне нравится {{post.likes}}</p>
+                    <!-- Надо передлать кнопку для отправки формы -->
+                    {% if user.is_authenticated and user == post.author %}
+                        <form method="POST">{% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Редактировать</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

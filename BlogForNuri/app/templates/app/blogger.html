@@ -2,9 +2,9 @@
 
 {% block content %}
 <div>
-    <h1>{{ user.username }}</h1>
-    <h4>{{ user.first_name }}</h4>
-    <h4>{{ user.last_name }}</h4>
+    <h1>{{ blogger.username }}</h1>
+    <h4>{{ blogger.first_name }}</h4>
+    <h4>{{ blogger.last_name }}</h4>
     <div class="row g-5">
         <div class="col-md-8">
             {% for post in blog %}
@@ -14,7 +14,7 @@
                     <div class="meta-wrap">
                         <p class="blog-post-meta">
                             <span>{{ post.published }}</span>
-                            <span>{{ post.display_categories }}</span>
+                            <span>{% for category in post.categories.all %} {{ category }} {% if not forloop.last %}, {% endif %} {% endfor %}</span>
                             <span>Отметок мне нравится {{ post.likes }}</span>
                         </p>
 

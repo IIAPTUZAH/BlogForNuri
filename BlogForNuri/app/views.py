@@ -1,6 +1,7 @@
 from datetime import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 
@@ -26,14 +27,43 @@ def home(request):
 def post(request, post_id):
     """Renders the post page."""
     assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        'app/post.html',
-        {
-            'title': Post.objects.get(id=post_id).title,
-            'post': Post.objects.get(id=post_id),
-        }
-    )
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'GET':
+        return render(
+            request,
+            'app/post.html',
+            {
+                'title': post.title,
+                'post': post,
+            }   
+        )
+
+    if request.method == 'POST':
+        post = get_object_or_404(Post, id=post_id)
+        form = BootstrapPostForm(request.POST, instance=post)   # TODO: Надо бы разобраться че к чему тут
+        if post.author != request.user:
+            raise PermissionDenied
+        else:
+            print(form.errors.as_json())
+            print(form.is_valid())
+            print(form.non_field_errors)
+            if form.is_valid():
+                print(form.non_field_errors())
+                post = form.save(commit=False)
+                post.last_edited = datetime.now().strftime("%d/%m/%Y")
+                post.categories.set(form.cleaned_data['categories'])
+                post.save()
+                return redirect('/post/' + str(post_id))
+            else:
+                form = BootstrapPostForm(instance=post)
+            return render(
+                request,
+                'app/post_edit.html',
+                {
+                    'post': Post.objects.get(id=post_id),
+                    'form': form,
+                }
+            )
 
 
 def posts(request):
@@ -49,6 +79,7 @@ def posts(request):
     )
 
 
+@login_required(login_url='/login/')
 def my_blog(request):
     """List of all user posts"""
     assert isinstance(request, HttpRequest)
@@ -95,7 +126,7 @@ def blogger(request, author_id):
         'app/blogger.html',
         {
             'title': User.objects.get(id=author_id).username,
-            'user': User.objects.get(id=author_id),
+            'blogger': User.objects.get(id=author_id),
             'blog': Post.objects.filter(author=author_id),
         }
     )
@@ -125,6 +156,7 @@ def post_create(request):
             post.author = request.user
             post.published = datetime.now().strftime("%d/%m/%Y")
             post.save()
+            post.categories.set(form.cleaned_data['categories'])    # Добавляем many-to-many категории после сохранения
             post_id=post.id
             return redirect('/post/' + str(post_id))
     else:
