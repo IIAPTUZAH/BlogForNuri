@@ -49,6 +49,21 @@ def posts(request):
     )
 
 
+@login_required(login_url='/login/')
+def my_blog(request):
+    """List of all user posts"""
+    assert isinstance(request, HttpRequest)
+    user = request.user
+    return render(
+        request,
+        'app/blog.html',
+        {
+            'title': 'Мои записи',
+            'posts': Post.objects.filter(author=user),
+        }
+    )
+
+
 def signup(request):
     """Renders the sign up page."""
     assert isinstance(request, HttpRequest)
