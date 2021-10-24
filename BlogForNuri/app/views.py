@@ -49,6 +49,7 @@ def posts(request):
     )
 
 
+@login_required(login_url='/login/')
 def my_blog(request):
     """List of all user posts"""
     assert isinstance(request, HttpRequest)
