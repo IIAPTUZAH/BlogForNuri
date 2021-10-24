@@ -27,6 +27,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('admin/', admin.site.urls),
     path('posts/', views.posts, name='posts'),
+    path('post/', views.post_create, name='post_create'),
     path('blogger/<int:author_id>/', views.blogger, name='blogger'),
     path('<int:blogger_id>/posts', views.posts, name='posts'),  # В процессе, нет шаблона блога
     path('post/<int:post_id>/', views.post, name='post'),
