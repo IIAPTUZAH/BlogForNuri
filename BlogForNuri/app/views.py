@@ -87,7 +87,7 @@ def post_delete(request, post_id):
             raise PermissionDenied
         else:
             post.delete()
-    return redirect('home')
+    return redirect('my_blog')
 
 
 @login_required(login_url='/login/')
