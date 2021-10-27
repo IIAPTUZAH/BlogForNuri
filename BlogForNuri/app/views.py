@@ -39,7 +39,6 @@ def post(request, post_id):
         )
 
     if request.method == 'POST':
-        post = get_object_or_404(Post, id=post_id)
         form = BootstrapPostForm(request.POST, instance=post)   # TODO: Надо бы разобраться че к чему тут
         if post.author != request.user:
             raise PermissionDenied
@@ -77,6 +76,18 @@ def posts(request):
             'posts': Post.objects.order_by('-likes'),
         }
     )
+
+@login_required(login_url='/login/')
+def post_delete(request, post_id):
+    """Deleting post in user blog"""
+    assert isinstance(request, HttpRequest)
+    if request.method == 'POST':
+        post = get_object_or_404(Post, id=post_id)
+        if post.author != request.user:
+            raise PermissionDenied
+        else:
+            post.delete()
+    return redirect('home')
 
 
 @login_required(login_url='/login/')
