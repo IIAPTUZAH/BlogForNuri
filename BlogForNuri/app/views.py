@@ -39,7 +39,6 @@ def post(request, post_id):
         )
 
     if request.method == 'POST':
-        post = get_object_or_404(Post, id=post_id)
         form = BootstrapPostForm(request.POST, instance=post)   # TODO: Надо бы разобраться че к чему тут
         if post.author != request.user:
             raise PermissionDenied
