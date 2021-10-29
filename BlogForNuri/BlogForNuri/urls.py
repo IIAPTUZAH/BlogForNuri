@@ -26,11 +26,10 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('signup/', views.signup, name='signup'),
     path('admin/', admin.site.urls),
-    path('posts/', views.posts, name='posts'),
+    path('posts/', views.PostListView.as_view(), name='posts'),
     path('post/', views.post_create, name='post_create'),
-    path('myblog/', views.my_blog, name='my_blog'),
+    path('myblog/', views.MyPostListView.as_view(), name='my_blog'),
     path('blogger/<int:author_id>/', views.blogger, name='blogger'),
-    path('<int:blogger_id>/posts', views.posts, name='posts'),  # В процессе, нет шаблона блога
     path('post/<int:post_id>/', views.post, name='post'),
     path('post/<int:post_id>/delete', views.post_delete, name='post_delete'),
     path('bloggers/', views.bloggers, name='bloggers'),

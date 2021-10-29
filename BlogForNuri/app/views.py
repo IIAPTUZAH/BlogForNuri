@@ -2,11 +2,19 @@ from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
 from django.core.exceptions import PermissionDenied
+from django.views import generic
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from .models import Post, User
 from .forms import SignUpForm, BootstrapPostForm
+
+
+class PostListView(generic.ListView):
+    model = Post
+    paginate_by = 5
+    template_name = 'app/blog.html'
 
 
 def home(request):
@@ -65,18 +73,6 @@ def post(request, post_id):
             )
 
 
-def posts(request):
-    """List of all posts"""
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        'app/blog.html',
-        {
-            'title': 'Все записи',
-            'posts': Post.objects.order_by('-likes'),
-        }
-    )
-
 @login_required(login_url='/login/')
 def post_delete(request, post_id):
     """Deleting post in user blog"""
@@ -90,19 +86,11 @@ def post_delete(request, post_id):
     return redirect('my_blog')
 
 
-@login_required(login_url='/login/')
-def my_blog(request):
-    """List of all user posts"""
-    assert isinstance(request, HttpRequest)
-    user = request.user
-    return render(
-        request,
-        'app/blog.html',
-        {
-            'title': 'Мои записи',
-            'posts': Post.objects.filter(author=user),
-        }
-    )
+@method_decorator(login_required(login_url='/login/'), name='dispatch')
+class MyPostListView(generic.ListView):
+    model = Post
+    paginate_by = 5
+    template_name = 'app/blog.html'
 
 
 def signup(request):
