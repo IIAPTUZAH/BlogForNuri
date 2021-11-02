@@ -1,51 +1,15 @@
 from datetime import datetime
+import json
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.views import generic
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from django.contrib.contenttypes.models import ContentType  # Узнать как обойтись без этого
-
 from .models import Post, User, Like
 from .forms import SignUpForm, BootstrapPostForm
-
-
-def add_like(obj, user):
-    """Лайкает `obj`.
-    """
-    obj_type = ContentType.objects.get_for_model(obj)
-    like, is_created = Like.objects.get_or_create(
-        content_type=obj_type, object_id=obj.id, user=user)
-    return like
-
-def remove_like(obj, user):
-    """Удаляет лайк с `obj`.
-    """
-    obj_type = ContentType.objects.get_for_model(obj)
-    Like.objects.filter(
-        content_type=obj_type, object_id=obj.id, user=user
-    ).delete()
-
-def is_liked(obj, user) -> bool:
-    """Проверяет, лайкнул ли `user` `obj`.
-    """
-    if not user.is_authenticated:
-        return False
-    obj_type = ContentType.objects.get_for_model(obj)
-    likes = Like.objects.filter(
-        content_type=obj_type, object_id=obj.id, user=user)
-    return likes.exists()
-
-def get_likes(obj):
-    """Получает всех пользователей, которые лайкнули `obj`.
-    """
-    obj_type = ContentType.objects.get_for_model(obj)
-    return User.objects.filter(
-        likes__content_type=obj_type, likes__object_id=obj.id)
-
 
 class PostListView(generic.ListView):
     model = Post
@@ -72,10 +36,6 @@ def post(request, post_id):
     """Renders the post page."""
     assert isinstance(request, HttpRequest)
     post = get_object_or_404(Post, id=post_id)
-    if is_liked(post, request.user):
-        remove_like(post, request.user)
-    else:
-        add_like(post, request.user)
     if request.method == 'GET':
         return render(
             request,
@@ -111,6 +71,24 @@ def post(request, post_id):
                     'form': form,
                 }
             )
+
+
+def like_post(request, post_id):
+    """Like or delete like on post."""
+    assert isinstance(request, HttpRequest)
+    post = get_object_or_404(Post, id=post_id)
+    if Like.is_liked(post, request.user):
+        Like.remove_like(post, request.user)
+    else:
+        Like.add_like(post, request.user)
+    print(Like.objects.count())    # Для отладки
+    return HttpResponse(
+            json.dumps({
+                "is_liked": Like.is_liked(post, request.user),
+                "like_count": post.total_likes,
+            }),
+            content_type="application/json"
+        )
 
 
 @login_required(login_url='/login/')
