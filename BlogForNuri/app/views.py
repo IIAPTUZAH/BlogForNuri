@@ -12,6 +12,7 @@ from .models import Post, User, Like
 from .forms import SignUpForm, BootstrapPostForm
 
 class PostListView(generic.ListView):
+    """Renders all posts page."""
     model = Post
     paginate_by = 5
     template_name = 'app/blog.html'
@@ -37,12 +38,14 @@ def post(request, post_id):
     assert isinstance(request, HttpRequest)
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'GET':
+        is_liked = Like.is_liked(post, request.user)
         return render(
             request,
             'app/post.html',
             {
                 'title': post.title,
                 'post': post,
+                'is_liked': is_liked,
             }   
         )
 
@@ -72,7 +75,7 @@ def post(request, post_id):
                 }
             )
 
-
+@login_required(login_url='/login/')
 def like_post(request, post_id):
     """Like or delete like on post."""
     assert isinstance(request, HttpRequest)
@@ -106,6 +109,7 @@ def post_delete(request, post_id):
 
 @method_decorator(login_required(login_url='/login/'), name='dispatch')
 class MyPostListView(generic.ListView):
+    """Renders all user posts page."""
     model = Post
     paginate_by = 5
     template_name = 'app/blog.html'
