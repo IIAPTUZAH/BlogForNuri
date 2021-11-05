@@ -32,6 +32,16 @@ def home(request):
         }
     )
 
+class PostDetailView(generic.DetailView):
+    """Пока не используется, отображение поста через класс"""
+    model = Post
+    def get_context_data(self, **kwargs):
+        post = get_object_or_404(Post, id=self.kwargs.get('pk'))
+        context = super(PostDetailView, self).get_context_data(**kwargs)
+        context['is_liked'] = Like.is_liked(post, self.request.user)
+        return context
+    template_name = 'app/blog.html'
+
 
 def post(request, post_id):
     """Renders the post page."""
@@ -111,6 +121,11 @@ def post_delete(request, post_id):
 class MyPostListView(generic.ListView):
     """Renders all user posts page."""
     model = Post
+    def get_queryset(self):
+        """Gets user posts"""
+        user = self.request.user
+        queryset = Post.objects.filter(author=user)
+        return queryset
     paginate_by = 5
     template_name = 'app/blog.html'
 
