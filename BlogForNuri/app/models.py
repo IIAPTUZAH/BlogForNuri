@@ -3,6 +3,7 @@ Definition of models.
 """
 
 from django.db import models
+from django.db.models import Count
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -18,8 +19,6 @@ class Profile(models.Model):
 class Like(models.Model):
     """Модель лайка"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    #post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    #like = models.BooleanField(default=False)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -84,6 +83,11 @@ class Post(models.Model):
         return ', '.join([ categories.name for categories in self.categories.all() ])
     display_categories.short_description = 'Categories'
 
+    #def all_likes(self):
+    #    test = Post.objects.annotate(my_likes=Count('test_likes'))
+    #    test
+    #    return test[0].my_likes
+    #all_likes.short_description = 'all_likes'
     class Meta:
         ordering = ('title',)
 
@@ -95,5 +99,3 @@ class Post(models.Model):
     def __str__(self):
         """Возвращаем название поста и автора"""
         return '{} автор @{}'.format(self.title, self.author.username)
-
-

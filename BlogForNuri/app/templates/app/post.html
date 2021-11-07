@@ -1,10 +1,9 @@
-{% extends "app/layout.html" %}
-
 {% block content %}
 
 <!DOCTYPE html>
 
 <html>
+{% if post %}
 <head>
     <meta charset="utf-8" />
     <title>{{ post.title }}</title>
@@ -25,18 +24,18 @@
                     <span>Автор текста</span>
                     <a href="/blogger/{{ post.author.id }}/">{{ post.author }}</a>
                 </div>
-                <button type="button" id="likeButton" class="btn btn-primary" data-action="like" data-id="{{ post.id }}" aria-pressed="false">Мне нравится 
-                <span data-count="like">{{post.total_likes}}</span>
+                <button type="button" class="likeButton btn btn-primary" data-action="like" data-id="{{ post.id }}" aria-pressed="false">Мне нравится 
+                !!!<span data-count="like">{{ post.all_likes }}</span>
                 </button>    
             </div>
             {% if user.is_authenticated and user == post.author %}
             <div class="d-grid gap-2 d-md-flex justify-content-md-end"> 
                 <!-- Надо передлать кнопку для отправки формы -->
-                <form method="POST">{% csrf_token %}
+                <form action="{% url "post" post_id=post.id %}" method="POST">{% csrf_token %}
                     <button type="submit" class="btn btn-primary">Редактировать</button>
                     <!-- Кнопка вызывающая modal -->
-                    <button type='button' class="btn btn-danger" data-toggle="modal" data-target="#delModal">Удалить</button>
                 </form>
+                <button type='button' class="btn btn-danger" data-toggle="modal" data-target="#delModal">Удалить</button>
             </div>
             {% endif %}
         </div>
@@ -64,54 +63,9 @@
         </div>
     </div>
 </body>
+{% else %}
+<h1>У тебя пока еще нет постов</h1>
+{% endif %}
 </html>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script>
-
-// Получение переменной cookie по имени
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
- 
-// Настройка AJAX
-$(function () {
-    $.ajaxSetup({
-        headers: { "X-CSRFToken": getCookie("csrftoken") }
-    });
-});
-
-function like() {
-    var like = $(this);
-    var pk = like.data('id');
-    var action = like.data('action');
- 
-    $.ajax({
-        url: "/post/" + pk + "/" + action + "/",
-        type : 'POST',
-        data : { 'obj' : pk },
- 
-        success : function (json) {
-            like.find("[data-count='like']").text(json.like_count);
-        }
-    });
- 
-    return false;
-}
-
-  $('#likeButton').click(like);
-</script>
 
 {% endblock %}

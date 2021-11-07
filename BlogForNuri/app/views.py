@@ -15,6 +15,7 @@ class PostListView(generic.ListView):
     """Renders all posts page."""
     model = Post
     paginate_by = 5
+    #ordering = ['all_likes']
     template_name = 'app/blog.html'
 
 
@@ -51,7 +52,7 @@ def post(request, post_id):
         is_liked = Like.is_liked(post, request.user)
         return render(
             request,
-            'app/post.html',
+            'app/blog.html',
             {
                 'title': post.title,
                 'post': post,
