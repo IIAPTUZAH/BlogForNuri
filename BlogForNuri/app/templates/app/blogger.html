@@ -15,7 +15,7 @@
                         <p class="blog-post-meta">
                             <span>{{ post.published }}</span>
                             <span>{% for category in post.categories.all %} {{ category }} {% if not forloop.last %}, {% endif %} {% endfor %}</span>
-                            <span>Отметок мне нравится {{ post.likes }}</span>
+                            <span>Отметок мне нравится {{ post.total_likes }}</span>
                         </p>
 
                     </div>

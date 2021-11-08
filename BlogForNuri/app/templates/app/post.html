@@ -22,10 +22,10 @@
                 {{ post.content }}
                 <div class="meta">
                     <span>Автор текста</span>
-                    <a href="/blogger/{{ post.author.id }}/">{{ post.author }}</a>
+                    <a href="{% url "blogger" author_id=post.author.id %}">{{ post.author }}</a>
                 </div>
                 <button type="button" class="likeButton btn btn-primary" data-action="like" data-id="{{ post.id }}" aria-pressed="false">Мне нравится 
-                !!!<span data-count="like">{{ post.all_likes }}</span>
+                    <span data-count="like">{{ post.total_likes }}</span>
                 </button>    
             </div>
             {% if user.is_authenticated and user == post.author %}
@@ -62,10 +62,10 @@
             </div>
         </div>
     </div>
-</body>
 {% else %}
-<h1>У тебя пока еще нет постов</h1>
+    <h1>У тебя пока еще нет постов</h1>
 {% endif %}
+</body>
 </html>
 
 {% endblock %}

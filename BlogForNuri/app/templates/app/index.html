@@ -20,11 +20,11 @@
                 <a href="post/{{ post.id }}/">
                     <h2 class="card-title">{{ post.title }}</h2></a>
                         <p class="card-text">{{ post.content }}</p>
-            <div class="card-footer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                </svg> {{post.likes}}
-                <a href="blogger/{{ post.author.id }}/">{{ post.author.username }}</a>
+                <div class="card-footer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                    </svg> {{ post.total_likes }}
+                    <a href="{% url "blogger" author_id=post.author.id %}">{{ post.author.username }}</a>
               </div>
             </div>
         </div>

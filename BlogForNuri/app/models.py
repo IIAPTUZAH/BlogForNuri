@@ -74,8 +74,8 @@ class Post(models.Model):
     content = models.TextField()
     published = models.DateTimeField(auto_now_add=True)
     last_edited = models.DateTimeField(auto_now=True)
-    likes = models.PositiveIntegerField(default=0)
-    test_likes = GenericRelation(Like)
+    total_likes = models.PositiveIntegerField(default=0)
+    likes = GenericRelation(Like)
     categories = models.ManyToManyField(Category)
 
     def display_categories(self):
@@ -83,18 +83,13 @@ class Post(models.Model):
         return ', '.join([ categories.name for categories in self.categories.all() ])
     display_categories.short_description = 'Categories'
 
-    #def all_likes(self):
-    #    test = Post.objects.annotate(my_likes=Count('test_likes'))
-    #    test
-    #    return test[0].my_likes
-    #all_likes.short_description = 'all_likes'
     class Meta:
         ordering = ('title',)
 
-    @property
-    def total_likes(self):
-        """Возвращаем общее количество лайков у поста"""
-        return self.test_likes.count()
+    #@property
+    #def total_likes(self):
+    #    """Возвращаем общее количество лайков у поста, более не используется"""
+    #    return self.test_likes.count()
 
     def __str__(self):
         """Возвращаем название поста и автора"""

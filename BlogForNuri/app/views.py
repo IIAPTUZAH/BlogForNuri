@@ -15,14 +15,14 @@ class PostListView(generic.ListView):
     """Renders all posts page."""
     model = Post
     paginate_by = 5
-    #ordering = ['all_likes']
+    ordering = ['-total_likes']
     template_name = 'app/blog.html'
 
 
 def home(request):
     """Renders the home page."""
     assert isinstance(request, HttpRequest)
-    most_liked_posts = Post.objects.order_by('-likes')[:3]
+    most_liked_posts = Post.objects.order_by('-total_likes')[:3]
     return render(
         request,
         'app/index.html',
@@ -93,13 +93,17 @@ def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if Like.is_liked(post, request.user):
         Like.remove_like(post, request.user)
+        post.total_likes -= 1
+        post.save()
     else:
         Like.add_like(post, request.user)
+        post.total_likes += 1
+        post.save()
     print(Like.objects.count())    # Для отладки
     return HttpResponse(
             json.dumps({
                 "is_liked": Like.is_liked(post, request.user),
-                "like_count": post.total_likes,
+                "total_likes": post.total_likes,
             }),
             content_type="application/json"
         )
