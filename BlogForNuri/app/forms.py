@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Post, Category
+from .models import Post, Category, Comment
 
 class BootstrapAuthenticationForm(AuthenticationForm):
     """Authentication form which uses boostrap CSS."""
@@ -61,3 +61,18 @@ class BootstrapPostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'content', 'categories',)
+
+
+class BootstrapCommentForm(forms.ModelForm):
+    comment = forms.CharField(
+        label='',
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'id': 'BootstrapCommentForm',
+            'rows': '3',
+            'placeholder': 'Написать комментарий...'
+            }))
+
+    class Meta:
+        model = Comment
+        fields = ['comment']
