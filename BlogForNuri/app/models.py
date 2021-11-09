@@ -75,7 +75,7 @@ class Post(models.Model):
     published = models.DateTimeField(auto_now_add=True)
     last_edited = models.DateTimeField(auto_now=True)
     total_likes = models.PositiveIntegerField(default=0)
-    likes = GenericRelation(Like)
+    likes = GenericRelation(Like, related_query_name='posts')
     categories = models.ManyToManyField(Category)
 
     def display_categories(self):
@@ -94,3 +94,34 @@ class Post(models.Model):
     def __str__(self):
         """Возвращаем название поста и автора"""
         return '{} автор @{}'.format(self.title, self.author.username)
+
+
+class Comment(models.Model):
+    """Модель комментария"""
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    comment = models.TextField()
+    likes = GenericRelation(Like, related_query_name='comments')
+    created_on = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey ('self', on_delete=models.CASCADE, blank=True, null=True, related_name ='replies')
+    deleted = models.BooleanField(default=False)
+
+    @property
+    def children(self):
+        """Получаем ответы на коммент"""
+        return Comment.objects.filter(parent=self).order_by('-created_on').all()
+
+    @property
+    def is_parent(self):
+        """Проверяем родительский ли коммент"""
+        if self.parent is None:
+            return True
+        return False
+
+    @property
+    def total_likes(self):
+        """Возвращаем общее количество лайков у коммента"""
+        return self.likes.count()
+
+    def __str__(self):
+        return 'Комментарий от {}'.format(self.author)
