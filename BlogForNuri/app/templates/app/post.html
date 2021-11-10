@@ -46,11 +46,11 @@
     <hr />
 
     <!-- Блок комментариев -->
-     <div class="row justify-content-center mt-3 mb-5">
-        <div class="col-md-5 col-sm-12">
+     <div class="row">
+        <div class="col-lg-8 col-md-5 col-sm-12">
             <form method="POST" action="{% url "add_comment" post_id=post.id %}">
                 {% csrf_token %}
-                {{ comment_form.as_p  }}
+                {{ comment_form  }}
                 <div class="d-grid gap-2">
                     <button class="btn btn-success mt-3">Отправить!</button>
                 </div>

@@ -13,7 +13,7 @@ body {
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: auto;
 }
 
 /* styles for validation helpers */
@@ -56,4 +56,11 @@ input[type="checkbox"].input-validation-error {
 /* edit child comment position */
 .child-comment {
     margin-left: 2rem;
+}
+
+/* edit send comment button position */
+.btn-success {
+    position: absolute;
+    top: 0;
+    right: -94px;
 }

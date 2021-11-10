@@ -17,6 +17,11 @@ class PostListView(generic.ListView):
     paginate_by = 5
     ordering = ['-total_likes']
     template_name = 'app/blog.html'
+    def get_context_data(self, **kwargs):
+        """  Adding comment form """
+        context =  super(PostListView, self).get_context_data(**kwargs)
+        context['comment_form'] = BootstrapCommentForm()
+        return context
 
 
 def home(request):
@@ -255,7 +260,7 @@ def comment_reply(request, post_id, comment_id):
             new_comment.post = post
             new_comment.parent = parent_comment
             new_comment.save()
-            form = EmployeeForm()
+
 
         return redirect('post', post_id)
 
