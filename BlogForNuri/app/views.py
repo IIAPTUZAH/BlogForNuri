@@ -228,6 +228,7 @@ def add_comment(request, post_id):
             new_comment.author = request.user
             new_comment.post = post
             new_comment.save()
+            comment_form = BootstrapCommentForm()
 
         comments = Comment.objects.filter(post=post).order_by('created_on')
 
@@ -254,6 +255,7 @@ def comment_reply(request, post_id, comment_id):
             new_comment.post = post
             new_comment.parent = parent_comment
             new_comment.save()
+            form = EmployeeForm()
 
         return redirect('post', post_id)
 
