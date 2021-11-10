@@ -8,8 +8,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from .models import Post, User, Like
-from .forms import SignUpForm, BootstrapPostForm
+from .models import Post, User, Like, Comment
+from .forms import SignUpForm, BootstrapPostForm, BootstrapCommentForm
 
 class PostListView(generic.ListView):
     """Renders all posts page."""
@@ -37,7 +37,7 @@ class PostDetailView(generic.DetailView):
     """Пока не используется, отображение поста через класс"""
     model = Post
     def get_context_data(self, **kwargs):
-        post = get_object_or_404(Post, id=self.kwargs.get('pk'))
+        post = get_object_or_404(Post, id=self.kwargs.get('id'))
         context = super(PostDetailView, self).get_context_data(**kwargs)
         context['is_liked'] = Like.is_liked(post, self.request.user)
         return context
@@ -49,6 +49,8 @@ def post(request, post_id):
     assert isinstance(request, HttpRequest)
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'GET':
+        comment_form = BootstrapCommentForm()
+        comments = Comment.objects.filter(post=post).order_by('created_on')
         is_liked = Like.is_liked(post, request.user)
         return render(
             request,
@@ -56,6 +58,8 @@ def post(request, post_id):
             {
                 'title': post.title,
                 'post': post,
+                'comment_form': comment_form,
+                'comments': comments,
                 'is_liked': is_liked,
             }   
         )
@@ -210,3 +214,64 @@ def post_create(request):
             'form': form,
         }
     )
+
+
+@login_required(login_url='/login/')
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+        
+        comment_form = BootstrapCommentForm(request.POST)
+
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.author = request.user
+            new_comment.post = post
+            new_comment.save()
+
+        comments = Comment.objects.filter(post=post).order_by('created_on')
+
+        context = {
+            'post': post,
+            'comment_form': comment_form,
+            'comments': comments,
+        }
+
+        return render(request, 'app/blog.html', context)
+
+
+@login_required(login_url='/login/')
+def comment_reply(request, post_id, comment_id):
+    """ Reply on comment. """
+    if request.method == 'POST':
+        post = Post.objects.get(id=post_id)
+        parent_comment = Comment.objects.get(id=comment_id)
+        form = BootstrapCommentForm(request.POST)
+
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.author = request.user
+            new_comment.post = post
+            new_comment.parent = parent_comment
+            new_comment.save()
+
+        return redirect('post', post_id)
+
+
+@login_required(login_url='/login/')
+def like_comment(request, comment_id):
+    """Like or delete like on comment."""
+    assert isinstance(request, HttpRequest)
+    comment = get_object_or_404(Comment, id=comment_id)
+    if Like.is_liked(comment, request.user):
+        Like.remove_like(comment, request.user)
+    else:
+        Like.add_like(comment, request.user)
+    print(Like.objects.count())    # Для отладки
+    return HttpResponse(
+            json.dumps({
+                "is_liked": Like.is_liked(comment, request.user),
+                "total_likes": comment.total_likes,
+            }),
+            content_type="application/json"
+        )

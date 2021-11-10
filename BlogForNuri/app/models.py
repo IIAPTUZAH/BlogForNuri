@@ -109,7 +109,7 @@ class Comment(models.Model):
     @property
     def children(self):
         """Получаем ответы на коммент"""
-        return Comment.objects.filter(parent=self).order_by('-created_on').all()
+        return Comment.objects.filter(parent=self).order_by('created_on').all()
 
     @property
     def is_parent(self):

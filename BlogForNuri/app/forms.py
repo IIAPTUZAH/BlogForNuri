@@ -20,6 +20,7 @@ class BootstrapAuthenticationForm(AuthenticationForm):
                                    'class': 'form-control',
                                    'placeholder':'Password'}))
 
+
 class SignUpForm(UserCreationForm):
     """Форма регистрации"""
     first_name = forms.CharField(max_length=30,
@@ -64,12 +65,13 @@ class BootstrapPostForm(forms.ModelForm):
 
 
 class BootstrapCommentForm(forms.ModelForm):
+    """Форма комментария"""
     comment = forms.CharField(
         label='',
         widget=forms.Textarea(attrs={
             'class': 'form-control',
             'id': 'BootstrapCommentForm',
-            'rows': '3',
+            'rows': '2',
             'placeholder': 'Написать комментарий...'
             }))
 
