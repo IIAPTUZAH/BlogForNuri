@@ -53,14 +53,3 @@ input[type="checkbox"].input-validation-error {
     filter: alpha(opacity=20);
   }
 
-/* edit child comment position */
-.child-comment {
-    margin-left: 2rem;
-}
-
-/* edit send comment button position */
-.btn-success {
-    position: absolute;
-    top: 0;
-    right: -94px;
-}
