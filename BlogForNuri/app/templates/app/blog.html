@@ -2,16 +2,15 @@
 {% extends "app/layout.html" %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
+
         {% if post_list %}
+        <ol class="list-unstyled mb-0">
             {% for post in post_list %}
-                {% include "app/post.html" %}
+                <li>{% include "app/post.html" %}</li>
             {% endfor %}
+        </ol>
         {% else %}
             {% include "app/post.html" %}
         {% endif %}
-    </div>
-</div>
 
 {% endblock %}

@@ -4,12 +4,11 @@
 
 {% block content %}
 
-<!DOCTYPE html>
-
     <h1>{% if not post %} Новый пост {% else %} Редактировать запись {% endif %}</h1>
-    <form method="POST" class="post-form">{% csrf_token %}
+    <form method="POST">
+        {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">Сохранить</button>
+        <button type="submit" class="save btn btn-primary">Сохранить</button>
     </form>
 
 {% endblock %}

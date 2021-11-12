@@ -1,85 +1,78 @@
 {% block content %}
 
-<!DOCTYPE html>
-
-<html>
 {% if post %}
 <head>
-    <meta charset="utf-8" />
     <title>{{ post.title }}</title>
 </head>
-<body>
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                <a href="{% url "post" post_id=post.id %}">
+        <div class="d-grid col-lg-8 col-md-10 mx-auto">
+            <a href="{% url "post" post_id=post.id %} " class="nav-link">
                 <h1>{{ post.title }}</h1>
-                </a>
-            </div>
-        </div>
-    </div>
-    <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-10 mx-auto">
-                    {{ post.content }}
-                    <div class="meta">
-                        <span>Автор текста</span>
-                        <a href="{% url "blogger" author_id=post.author.id %}">{{ post.author }}</a>
-                    </div>
-                    <button type="button" class="likeButton btn btn-primary" data-action="like" data-id="{{ post.id }}" aria-pressed="false">Мне нравится 
-                        <span data-count="like">{{ post.total_likes }}</span>
-                    </button>    
-                </div>
+            </a>
+            <p class="mb-3"> 
+               {{ post.content }}
+            </p>
+            <p>
+                <span>Автор текста</span>
+                <a href="{% url "blogger" author_id=post.author.id %}">{{ post.author }}</a>
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="likeButton btn btn-primary" data-bs-toggle="button" data-action="like" data-id="{{ post.id }}">Мне нравится 
+                    <span data-count="like">{{ post.total_likes }}</span>
+                </button>
                 {% if user.is_authenticated and user == post.author %}
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end"> 
-                    <!-- Надо передлать кнопку для отправки формы -->
-                    <form action="{% url "post" post_id=post.id %}" method="POST">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">Редактировать</button>
-                        <!-- Кнопка вызывающая modal -->
-                    </form>
-                    <button type='button' class="btn btn-danger" data-toggle="modal" data-target="#delModal">Удалить</button>
-                </div>
+                <!-- Надо передлать кнопку для отправки формы -->
+                <form action="{% url "post" post_id=post.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Редактировать</button>
+                </form>
+                <!-- Кнопка вызывающая modal -->
+                <button type='button' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delModal">Удалить</button>
                 {% endif %}
             </div>
-        
-        <hr />
+            <hr />
+        </div>
 
         <!-- Блок комментариев -->
-         <div class="row">
-            <div class="col-md-8 col-sm-12">
-                <form method="POST" class="form-inline" action="{% url "add_comment" post_id=post.id %}">
-                    {% csrf_token %}
+        <div class="d-grid col-lg-8 col-md-10 mx-auto">
+            <form method="POST" class="form-inline" action="{% url "add_comment" post_id=post.id %}">
+                {% csrf_token %}
+                <div class="d-grid col-lg-10 gap-2 d-md-flex justify-content-md-end mb-3">
                     {{ comment_form  }}
-                        <button class="btn btn-success justify-content-end">Отправить!</button>
-                </form>
-            </div>
-        </div>
-        {% for comment in comments %}
-        {% if comment.is_parent %}
-        <div class="row justify-content-center">
-            <div class="col-lg-4 col-md-8 col-sm-12 border-bottom">
-                <p>
-                    <div class="comment-meta">
-                        <a href="{% url 'blogger' comment.author.id %}"></a>
-                        <p class="comment-text">
-                            <a class="text-primary comment-link" href="{% url 'blogger' comment.author.id %}">@{{ comment.author }}</a> {{ comment.created_on }}
-                        </p>
-                        <p>{{ comment.comment }}</p>
-                        <!-- Лайки комментария -->
-                        <form method="POST" action="{% url 'like_comment' comment_id=comment.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <button class="btn btn-default btn-xs" type="submit">
-                                <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> {{ comment.total_likes }}
-                            </button>
-                        </form>
-                        <button class="close delete-comment" aria-label="Close"><span aria-hidden="true" onclick="commentReplyToggle('{{ comment.id }}')">&times;</span></button>
+                    <button class="btn btn-success">Отправить!</button>
                 </div>
-                </p>
+            </form>
+
+            {% for comment in comments %}
+            {% if comment.is_parent %}
+            <div class="d-grid row comment-content col-md-5 col-sm-12 border-bottom">
+                <div class="d-grid col-md-12 comment-action justify-content-md-end">
+                    <button class="btn delete-comment">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="comment-meta col-md-11">
+                    <a class="text-primary comment-link" href="{% url 'blogger' comment.author.id %}">@{{ comment.author }}</a> 
+                    <span>{{ comment.created_on }}</span>
+                </div>
+                <div class="comment-text">
+                    {{ comment.comment }}
+                </div>
+                <!-- Лайки комментария -->
+                <form method="POST" action="{% url 'like_comment' comment_id=comment.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button class="btn btn-default btn-xs" type="submit">
+                        <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> {{ comment.total_likes }}
+                    </button>
+                </form>
+                <button class="btn-close hide-form" aria-label="Close">
+                    <span aria-hidden="true" onclick="commentReplyToggle('{{ comment.id }}')"></span>
+                </button>
             </div>
-        </div>
-        <div class="row justify-content-center mt-3 mb-5 d-none" id="{{ comment.id }}">
+        
+
+        <div class="justify-content-center mt-3 mb-5 d-none" id="{{ comment.id }}">
             <div class="col-md-8 col-sm-12">
                 <form method="POST" class="form-inline" action="{% url 'comment_reply' post.id comment.id %}">
                     {% csrf_token %}
@@ -90,7 +83,7 @@
         </div>
 
         {% for child_comment in comment.children %}
-        <div class="row justify-content-center mt-3 mb-5 child-comment">
+        <div class="justify-content-start mt-3 mb-5 child-comment">
             <div class="col-md-5 col-sm-12 border-bottom">
                 <p>
                     <div>
@@ -101,30 +94,28 @@
                     </div>
 
                 </p>
-                <p>{{ child_comment.comment }}</p>
+                {{ child_comment.comment }}
             </div>
         </div>
         {% endfor %}
         {% endif %}
         {% endfor %}
-
+        </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="delModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="delModalLabel">Удаление поста</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <p>Вы действительно хоите удалить запись?</p>
                     </div>
                     <div class="modal-footer">
                         <form action="{% url "post_delete" post_id=post.id %}" method="POST">{% csrf_token %}
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
                             <button type="submit" class="btn btn-danger">Удалить</button>
                         </form>
                     </div>
@@ -135,7 +126,4 @@
 {% else %}
     <h1>У тебя пока еще нет постов</h1>
 {% endif %}
-</body>
-</html>
-
 {% endblock %}
