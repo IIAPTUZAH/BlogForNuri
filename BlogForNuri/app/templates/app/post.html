@@ -45,30 +45,38 @@
 
             {% for comment in comments %}
             {% if comment.is_parent %}
-            <div class="d-grid row comment-content col-md-5 col-sm-12 border-bottom">
-                <div class="d-grid col-md-12 comment-action justify-content-md-end">
-                    <button class="btn delete-comment">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+            <div class="row comment-content col-md-5 col-sm-12 border-bottom justify-content-md-start">
                 <div class="comment-meta col-md-11">
                     <a class="text-primary comment-link" href="{% url 'blogger' comment.author.id %}">@{{ comment.author }}</a> 
                     <span>{{ comment.created_on }}</span>
                 </div>
-                <div class="comment-text">
+
+                <div class="comment-action col-md-1 mb-1">
+                    <button class="btn delete-comment">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>  
+
+                <div class="comment-text col-md-10">
                     {{ comment.comment }}
                 </div>
                 <!-- Лайки комментария -->
-                <form method="POST" action="{% url 'like_comment' comment_id=comment.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ request.path }}">
-                    <button class="btn btn-default btn-xs" type="submit">
-                        <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> {{ comment.total_likes }}
+                <div class="comment-footer col-md-2">
+                    <form method="POST" action="{% url 'like_comment' comment_id=comment.id %}" class="col-md-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button class="btn btn-default btn-xs" type="submit">
+                            <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> {{ comment.total_likes }}
+                            <i class="bi bi-heart"></i>
+                            <svg class="bi" width="32" height="32" fill="currentColor">
+                                <use xlink:href="bootstrap-icons.svg#heart-fill"/>
+                              </svg>
+                        </button>
+                    </form>
+                    <button class="btn-close hide-form" aria-label="Close">
+                        <span aria-hidden="true" onclick="commentReplyToggle('{{ comment.id }}')"></span>
                     </button>
-                </form>
-                <button class="btn-close hide-form" aria-label="Close">
-                    <span aria-hidden="true" onclick="commentReplyToggle('{{ comment.id }}')"></span>
-                </button>
+                </div>
             </div>
         
 
