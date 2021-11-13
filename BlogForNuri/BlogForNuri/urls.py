@@ -36,6 +36,7 @@ urlpatterns = [
     path('post/<int:post_id>/delete/', views.post_delete, name='post_delete'),
     path('post/<int:post_id>/comment/', views.add_comment, name='add_comment'),  # Работаю над комментами
     path('comment/<int:comment_id>/like/', views.like_comment, name='like_comment'),
+    path('comment/<int:comment_id>/delete/', views.comment_delete, name='comment_delete'),
     path('post/<int:post_id>/comment/<int:comment_id>/replay/', views.comment_reply, name='comment_reply'),
     path('bloggers/', views.bloggers, name='bloggers'),
 ]

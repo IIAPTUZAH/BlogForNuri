@@ -282,3 +282,16 @@ def like_comment(request, comment_id):
             }),
             content_type="application/json"
         )
+
+
+@login_required(login_url='/login/')
+def comment_delete(request, comment_id):
+    """Deleting comment"""
+    assert isinstance(request, HttpRequest)
+    if request.method == 'POST':
+        comment = get_object_or_404(Comment, id=comment_id)
+        if comment.author != request.user:
+            raise PermissionDenied
+        else:
+            comment.delete()
+    return redirect(request.META['HTTP_REFERER'])

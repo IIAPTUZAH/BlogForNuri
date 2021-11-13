@@ -17,7 +17,7 @@
                 <a href="{% url "blogger" author_id=post.author.id %}">{{ post.author }}</a>
             </p>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="button" class="likeButton btn btn-primary" data-bs-toggle="button" data-action="like" data-id="{{ post.id }}">Мне нравится 
+                <button type="button" class="likeButton btn btn-primary" data-bs-toggle="button" data-action="like" data-type="post" data-id="{{ post.id }}">Мне нравится 
                     <span data-count="like">{{ post.total_likes }}</span>
                 </button>
                 {% if user.is_authenticated and user == post.author %}
@@ -37,7 +37,7 @@
         <div class="d-grid col-lg-8 col-md-10 mx-auto">
             <form method="POST" class="form-inline" action="{% url "add_comment" post_id=post.id %}">
                 {% csrf_token %}
-                <div class="d-grid col-lg-10 gap-2 d-md-flex justify-content-md-end mb-3">
+                <div class="d-grid col-lg-12 gap-2 d-md-flex justify-content-md-end mb-3">
                     {{ comment_form  }}
                     <button class="btn btn-success">Отправить!</button>
                 </div>
@@ -45,69 +45,77 @@
 
             {% for comment in comments %}
             {% if comment.is_parent %}
-            <div class="row comment-content col-md-5 col-sm-12 border-bottom justify-content-md-start">
+            <!-- Родительский комментарий -->
+            <div class="row comment-content border-bottom mt-2 mb-3 justify-content-md-start">
                 <div class="comment-meta col-md-11">
                     <a class="text-primary comment-link" href="{% url 'blogger' comment.author.id %}">@{{ comment.author }}</a> 
                     <span>{{ comment.created_on }}</span>
                 </div>
 
                 <div class="comment-action col-md-1 mb-1">
-                    <button class="btn delete-comment">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <form method="POST" class="form-inline" action="{% url "comment_delete" comment_id=comment.id %}">
+                        {% csrf_token %}
+                        <button class="btn delete-comment">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </form>
                 </div>  
 
                 <div class="comment-text col-md-10">
                     {{ comment.comment }}
                 </div>
                 <!-- Лайки комментария -->
-                <div class="comment-footer col-md-2">
-                    <form method="POST" action="{% url 'like_comment' comment_id=comment.id %}" class="col-md-2">
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ request.path }}">
-                        <button class="btn btn-default btn-xs" type="submit">
-                            <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> {{ comment.total_likes }}
-                            <i class="bi bi-heart"></i>
-                            <svg class="bi" width="32" height="32" fill="currentColor">
-                                <use xlink:href="bootstrap-icons.svg#heart-fill"/>
-                              </svg>
-                        </button>
-                    </form>
-                    <button class="btn-close hide-form" aria-label="Close">
-                        <span aria-hidden="true" onclick="commentReplyToggle('{{ comment.id }}')"></span>
+                <div class="comment-footer col-md-2 align-self-end">
+                    <button type="button" class="likeButton btn btn-default btn-xs" data-bs-toggle="button" data-action="like" data-type="comment" data-id="{{ comment.id }}">
+                        <i class="bi bi-heart" data-count="like"> {{ comment.total_likes }}</i>
+                    </button>
+                    <button class="btn btn-default hide-form btn-xs" aria-label="Close">
+                        <i class="bi bi-arrow-down" aria-hidden="true" onclick="commentReplyToggle('{{ comment.id }}')"></i>
                     </button>
                 </div>
             </div>
         
-
-        <div class="justify-content-center mt-3 mb-5 d-none" id="{{ comment.id }}">
-            <div class="col-md-8 col-sm-12">
-                <form method="POST" class="form-inline" action="{% url 'comment_reply' post.id comment.id %}">
-                    {% csrf_token %}
-                    {{ comment_form  }}
-                    <button class="btn btn-success justify-content-end">Отправить!</button>
-                </form>
+            <!-- Форма ответа на комментарий -->
+            <div class="justify-content-center mt-3 mb-5 d-none" id="{{ comment.id }}">
+                <div class="col-md-8 col-sm-12">
+                    <form method="POST" class="form-inline" action="{% url 'comment_reply' post.id comment.id %}">
+                        {% csrf_token %}
+                        {{ comment_form  }}
+                        <button class="btn btn-success mt-1 justify-content-end">Отправить!</button>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        {% for child_comment in comment.children %}
-        <div class="justify-content-start mt-3 mb-5 child-comment">
-            <div class="col-md-5 col-sm-12 border-bottom">
-                <p>
-                    <div>
-                        <a href="{% url 'blogger' comment.author.id %}"></a>
-                        <p class="post-text">
-                            <a class="text-primary post-link" href="{% url 'blogger' child_comment.author.id %}">@{{ child_comment.author }}</a> {{ child_comment.created_on }}
-                        </p>
-                    </div>
+            <!-- Дочерние комментарии -->
+            {% for child_comment in comment.children %}
+            <div class="row child-comment border-bottom mt-2 mb-3 col-md-9 justify-content-between">
+                <div class="comment-meta col-md-11">
+                        <a class="text-primary comment-link" href="{% url 'blogger' child_comment.author.id %}">@{{ child_comment.author }}</a>
+                        <span>{{ child_comment.created_on }}</span>
+                </div>
 
-                </p>
-                {{ child_comment.comment }}
+                <div class="comment-action col-1 mb-1">
+                    <form method="POST" class="form-inline" action="{% url "comment_delete" comment_id=child_comment.id %}">
+                        {% csrf_token %}
+                        <button class="btn delete-comment">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </form>
+                </div> 
+                
+                <div class="comment-text col-md-10 mt-8">
+                    {{ child_comment.comment }}
+                </div>
+
+                <div class="comment-footer col-auto align-self-end">
+                    <button type="button" class="likeButton btn btn-default" data-bs-toggle="button" data-action="like" data-type="comment" data-id="{{ child_comment.id }}">
+                        <i class="bi bi-heart" data-count="like"> {{ child_comment.total_likes }}</i>
+                    </button>
+                </div>
             </div>
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endfor %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
         </div>
 
         <!-- Modal -->
