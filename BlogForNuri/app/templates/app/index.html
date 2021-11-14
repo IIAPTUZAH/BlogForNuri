@@ -2,34 +2,39 @@
 
 {% block content %}
 
-<div class="jumbotron">
-  <h1 class="display-4">Приветствую в моем блоге!</h1>
-  <p class="lead">Тут могла бы быть лучшая статья недели, либо ваша реклама.</p>
-  <hr class="my-4">
-  <p>А ниже вы видите кнопку которая ничего не делает - очень похоже на меня.</p>
-  <p class="lead">
-    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-  </p>
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5">
+      <h1 class="display-5 fw-bold">Приветствую в моем блоге!</h1>
+      <p class="col-md-8 fs-4">Тут могла бы быть лучшая статья недели, либо ваша реклама.</p>
+      <hr class="my-4">
+      <p>А ниже вы видите кнопку которая ничего не делает - очень похоже на меня.</p>
+      <p class="lead">
+        <a class="btn btn-primary btn-lg" href="#" role="button">А вот и я</a>
+      </p>
+    </div>
 </div>
 
-<div class="row">
-    {% for post in posts %}
-    <article class="post-preview">
+<article class="post-preview">
+    <div class="row align-items-md-stretch">
+        {% for post in posts %}
         <div class="col-md-4">
             <div class="card-body">
-                <a href="post/{{ post.id }}/">
-                    <h2 class="card-title">{{ post.title }}</h2></a>
-                        <p class="card-text">{{ post.content }}</p>
+                <a href="{% url "post" post_id=post.id %} " class="nav-link">
+                    <h2 class="card-title">{{ post.title }}</h2>
+                </a>
+                <p class="card-text">
+                    {{ post.content }}
+                </p>
                 <div class="card-footer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                    </svg> {{ post.total_likes }}
+                    <button type="button" class="likeButton btn btn-default btn-xs" data-bs-toggle="button" data-action="like" data-type="post" data-id="{{ post.id }}">
+                        <i class="bi bi-heart" data-count="like"> {{ post.total_likes }}</i>
+                    </button>
                     <a href="{% url "blogger" author_id=post.author.id %}">{{ post.author.username }}</a>
               </div>
             </div>
         </div>
-    </article>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
+</article>
 
 {% endblock %}

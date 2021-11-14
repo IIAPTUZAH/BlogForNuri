@@ -143,6 +143,12 @@ class MyPostListView(generic.ListView):
     paginate_by = 5
     template_name = 'app/blog.html'
 
+    def get_context_data(self, **kwargs):
+        """ Adding comment form."""
+        context =  super(MyPostListView, self).get_context_data(**kwargs)
+        context['comment_form'] = BootstrapCommentForm()
+        return context
+
 
 def signup(request):
     """Renders the sign up page."""
@@ -183,7 +189,7 @@ def blogger(request, author_id):
 
 
 def bloggers(request):
-    """Renders list of all bloggers"""
+    """Renders list of all bloggers."""
     assert isinstance(request, HttpRequest)
     return render(
         request,
@@ -197,7 +203,7 @@ def bloggers(request):
 
 @login_required(login_url='/login/')
 def post_create(request):
-    """Create new post if user is authenticated"""
+    """Create new post if user is authenticated."""
     assert isinstance(request, HttpRequest)
     if request.method == 'POST':
         form = BootstrapPostForm(request.POST)
@@ -223,6 +229,7 @@ def post_create(request):
 
 @login_required(login_url='/login/')
 def add_comment(request, post_id):
+    """Add cooment to post."""
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'POST':
         
@@ -237,13 +244,7 @@ def add_comment(request, post_id):
 
         comments = Comment.objects.filter(post=post).order_by('created_on')
 
-        context = {
-            'post': post,
-            'comment_form': comment_form,
-            'comments': comments,
-        }
-
-        return render(request, 'app/blog.html', context)
+    return redirect(request.META['HTTP_REFERER'])
 
 
 @login_required(login_url='/login/')
@@ -262,7 +263,7 @@ def comment_reply(request, post_id, comment_id):
             new_comment.save()
 
 
-        return redirect('post', post_id)
+    return redirect(request.META['HTTP_REFERER'])
 
 
 @login_required(login_url='/login/')
@@ -286,7 +287,7 @@ def like_comment(request, comment_id):
 
 @login_required(login_url='/login/')
 def comment_delete(request, comment_id):
-    """Deleting comment"""
+    """Deleting comment."""
     assert isinstance(request, HttpRequest)
     if request.method == 'POST':
         comment = get_object_or_404(Comment, id=comment_id)
