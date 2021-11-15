@@ -27,7 +27,7 @@
                     <button type="submit" class="btn btn-primary">Редактировать</button>
                 </form>
                 <!-- Кнопка вызывающая modal -->
-                <button type='button' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delModal">Удалить</button>
+                <button type='button' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delModal{{post.id}}">Удалить</button>
                 {% endif %}
             </div>
             <hr />
@@ -119,7 +119,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
+        <div class="modal fade" id="delModal{{post.id}}" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
