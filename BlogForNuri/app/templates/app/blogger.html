@@ -10,7 +10,9 @@
             {% for post in blog %}
             <article class="blog-post">
                 <div>
-                    <h3 class="blog-post-title">{{ post.title }}</h3>
+                    <a href="{% url "post" post_id=post.id %}">
+                        <h3 class="blog-post-title">{{ post.title }}</h3>
+                    </a>
                     <div class="meta-wrap">
                         <p class="blog-post-meta">
                             <span>{{ post.published }}</span>
