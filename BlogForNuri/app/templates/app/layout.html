@@ -3,47 +3,142 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - My Django Application</title>
-    {% load staticfiles %}
+    <title>{{ title }} - Мой блог на Джанго</title>
+    {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/style.css' %}" />
     <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
 </head>
 
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <header class="p-3 bg-dark text-white">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a href="/" class="navbar-brand">Application name</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'about' %}">About</a></li>
-                    <li><a href="{% url 'contact' %}">Contact</a></li>
-                </ul>
-                {% include 'app/loginpartial.html' %}
-            </div>
+          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-bootstrap" viewBox="0 0 16 16">
+                    <path d="M5.062 12h3.475c1.804 0 2.888-.908 2.888-2.396 0-1.102-.761-1.916-1.904-2.034v-.1c.832-.14 1.482-.93 1.482-1.816 0-1.3-.955-2.11-2.542-2.11H5.062V12zm1.313-4.875V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762V8.162h1.822c1.236 0 1.887.463 1.887 1.348 0 .896-.627 1.377-1.811 1.377H6.375z"/>
+                    <path d="M0 4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4zm4-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4z"/>
+                </svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a  href="{% url 'home' %}" class="nav-link px-2 text-secondary">Домашняя страница</a></li>
+                    <li><a href="{% url 'posts' %}" class="nav-link px-2 text-white">Все записи</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'admin:index' %}" class="nav-link px-2 text-white">Админка</a></li>
+                    <li><a href="{% url 'my_blog' %}" class="nav-link px-2 text-white">Мои записи</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'post_create' %}" class="nav-link px-2 text-white">Создать пост</a></li>
+            </ul>
+
+            {% include 'app/loginpartial.html' %}
+
+          </div>
         </div>
-    </div>
+    </header>
 
     <div class="container body-content">
-{% block content %}{% endblock %}
+        {% block content %}{% endblock %}
+
+        {% block pagination %}
+          {% if is_paginated %}
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item">
+                    {% if page_obj.has_previous %}
+                    <a class="page-link" href="{{ request.path }}?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    {% endif %}
+                </li>
+                <li class="page-item"> <span> Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.</span></li>
+                <li class="page-item">  
+                    {% if page_obj.has_next %}
+                    <a class="page-link" href="{{ request.path }}?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                    {% endif %}
+                </li>
+            </ul>  
+          </nav>
+          {% endif %}
+        {% endblock %}
+
         <hr/>
+
         <footer>
-            <p>&copy; {{ year }} - My Django Application</p>
+            <p>&copy; {{ year }} - Мой блог на Джанго</p>
         </footer>
     </div>
-
+{% block scripts %}
     <script src="{% static 'app/scripts/jquery-1.10.2.js' %}"></script>
     <script src="{% static 'app/scripts/bootstrap.js' %}"></script>
     <script src="{% static 'app/scripts/respond.js' %}"></script>
-{% block scripts %}{% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>
+
+// Получение переменной cookie по имени
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+ 
+// Настройка AJAX
+$(function () {
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+    });
+});
+
+// Обрабатываем лайки
+function like() {
+    var like = $(this);
+    var type = like.data('type');
+    var pk = like.data('id');
+    var action = like.data('action');
+ 
+    $.ajax({
+        url: "/" + type + "/" + pk + "/" + action + "/",
+        type : 'POST',
+        data : { 'obj' : pk },
+ 
+        success : function (json) {
+            like.find("[data-count='like']").text(json.total_likes);
+        }
+    });
+ 
+    return false;
+}
+
+    $('.likeButton').click(like);
+
+// Скрываем форму ответа на коммент
+function commentReplyToggle(parent_id) {
+	const row = document.getElementById(parent_id);
+
+	if (row.classList.contains('d-none')) {
+		row.classList.remove('d-none');
+	} else {
+		row.classList.add('d-none');
+	}
+}
+
+</script>
+{% endblock %}
 
 </body>
 </html>

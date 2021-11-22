@@ -1,0 +1,16 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+    <div>
+        <h1>Список всех блоггеров</h1>
+        <div>
+            <ul>
+                {% for blogger in bloggers %}
+                <li>
+                    <a href="{% url "blogger" author_id=blogger.id %}">{{ blogger.username }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div>
+    <h1>{{ blogger.username }}</h1>
+    <h4>{{ blogger.first_name }}</h4>
+    <h4>{{ blogger.last_name }}</h4>
+    <div class="row g-5">
+        <div class="col-md-8">
+            {% for post in blog %}
+            <article class="blog-post">
+                <div>
+                    <a href="{% url "post" post_id=post.id %}">
+                        <h3 class="blog-post-title">{{ post.title }}</h3>
+                    </a>
+                    <div class="meta-wrap">
+                        <p class="blog-post-meta">
+                            <span>{{ post.published }}</span>
+                            <span>{% for category in post.categories.all %} {{ category }} {% if not forloop.last %}, {% endif %} {% endfor %}</span>
+                            <span>Отметок мне нравится {{ post.total_likes }}</span>
+                        </p>
+
+                    </div>
+                    
+                    <p class="blog-post-content">{{ post.content }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

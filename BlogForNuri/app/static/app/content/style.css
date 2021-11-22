@@ -1,0 +1,18 @@
+@import './../bootstrap-icons/font/bootstrap-icons.css';
+
+textarea {
+  resize: vertical;
+}
+
+.delete-comment {
+  padding: 0;
+}
+
+.child-comment {
+  margin-left: 2rem;
+}
+
+.hide-form{
+  padding: 0  
+}
+/*# sourceMappingURL=style.css.map */
